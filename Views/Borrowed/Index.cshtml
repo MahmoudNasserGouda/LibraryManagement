@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Library.Models.Borrowed>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Borrowed History</h1>
+
+<p>
+    <a class="btn btn-dark btn-lg" asp-action="Create">Borrow</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BorrowedBook)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BorrowingMember)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BorrowedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsReturned)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BorrowedBook.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BorrowingMember.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BorrowedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsReturned)
+            </td>
+            <td>
+                @Html.ActionLink("Return", "Edit", new { BookId=item.BorrowedBook.BookId, MemberId=item.BorrowingMember.Id }, new { @class="btn btn-secondary"})
+            </td>
+
+        </tr>
+}
+    </tbody>
+</table>
