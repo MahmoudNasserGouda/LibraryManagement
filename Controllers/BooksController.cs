@@ -66,7 +66,6 @@ namespace Library.Controllers
             return View(book);
         }
 
-        public int BorrowedCount { get; set; }
 
         // GET: Members/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -81,7 +80,6 @@ namespace Library.Controllers
             {
                 return NotFound();
             }
-            BorrowedCount = book.AllCopies - book.AvailableCopies;
             return View(book);
         }
 
@@ -99,14 +97,18 @@ namespace Library.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {                  
-                    if (!(book.AllCopies  >= BorrowedCount))
+                {
+                    int BorrowedCount = await _context.Borrowed.CountAsync();
+                    if (!(book.AllCopies >= BorrowedCount))
                     {
                         ModelState.AddModelError("AllCopies", $"All Copies Can't be less than Borrowed Copies: {BorrowedCount}");
                     }
-                    book.AvailableCopies += book.AllCopies - book.AvailableCopies - BorrowedCount;
-                    _context.Update(book);
-                    await _context.SaveChangesAsync();
+                    else
+                    {
+                        book.AvailableCopies += book.AllCopies - book.AvailableCopies - BorrowedCount;
+                        _context.Update(book);
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
